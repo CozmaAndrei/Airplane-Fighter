@@ -80,7 +80,7 @@ function createAsteroid() {
         const asteroid = document.createElement("div");
         asteroid.classList.add("asteroid");
         gameContainer.appendChild(asteroid);
-        asteroid.style.left = `${Math.random() * 90 + 5}%`; // asteroids will be automatically generated on the axis, between 5% and 95%, to avoid them leaving the div.
+        asteroid.style.left = `${Math.random() * 90 + 5}%`;
         asteroidMove(asteroid);
     }
 }
@@ -112,34 +112,40 @@ function createRockets() {
     rockets.style.top = `${airPlanePositionVertical - 10}%`;
     rockets.style.left = `${airPlanePositionHorizontal}%`;
     gameContainer.appendChild(rockets);
-    theRocketMoveAndDestroyAsteroid(rockets);
+    moveRocket(rockets);
 }
 
-function theRocketMoveAndDestroyAsteroid(rockets) {
+function moveRocket(rockets) {
     let fireRocket = airPlanePositionVertical;
-    const rocketMove = setInterval(() => {
+    let rocketMove = setInterval(() => {
         fireRocket -= rocketSpeed;
         rockets.style.top = `${fireRocket}%`;
         const rocketRect = rockets.getBoundingClientRect();
-        const asteroids = document.querySelectorAll('.asteroid');
-        asteroids.forEach(asteroid => {
-            const asteroidRect = asteroid.getBoundingClientRect();
-            if (rocketRect.top <= asteroidRect.bottom &&
-                rocketRect.left <= asteroidRect.right &&
-                rocketRect.right >= asteroidRect.left) {
-                rockets.remove();
-                asteroid.remove();
-                clearInterval(rocketMove);
-                ++destroyedAsteroids;
-                currentDestroyedAsteroids.innerHTML = `Destroyed asteroids: ${destroyedAsteroids}`;
-                levelUp();
-            }
-        });
         if (rocketRect.top <= gameContainerRect.top) {
             clearInterval(rocketMove);
             rockets.remove();
+        } else {
+            destroyAsteroid(rockets);
         }
     }, 30);
+}
+
+function destroyAsteroid(rockets) {
+    const rocketRect = rockets.getBoundingClientRect();
+    const asteroids = document.querySelectorAll('.asteroid');
+    asteroids.forEach(asteroid => {
+        const asteroidRect = asteroid.getBoundingClientRect();
+        if (rocketRect.top <= asteroidRect.bottom &&
+            rocketRect.left <= asteroidRect.right &&
+            rocketRect.right >= asteroidRect.left) {
+            rockets.remove();
+            asteroid.remove();
+            clearInterval(moveRocket);
+            ++destroyedAsteroids;
+            currentDestroyedAsteroids.innerHTML = `Destroyed asteroids: ${destroyedAsteroids}`;
+            levelUp();
+        }
+    });
 }
 
 setInterval(checkCollisionPlaneWithAsteroid, 100);

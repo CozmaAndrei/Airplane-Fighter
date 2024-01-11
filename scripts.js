@@ -23,8 +23,8 @@ let airPlanePositionHorizontalMax = 96;
 let airPlanePositionHorizontalMin = 4
 let airPlanePositionVerticalMax = 90;
 let airPlanePositionVerticalMin = 10;
-const increaseAsteroidPosition = 2;
-const rocketSpeed = 5;
+const increaseAsteroidPosition = 1;
+const rocketSpeed = 1;
 
 startButton.addEventListener("click", startGame);
 
@@ -86,18 +86,18 @@ function createAsteroid() {
 }
 
 function asteroidMove(asteroid) {
-    let asteroidPosition = 0;
+    let asteroidPosition = -20;
     let setAsteroidMove = setInterval(() => {
         asteroidPosition += increaseAsteroidPosition;
         asteroid.style.top = `${asteroidPosition}px`;
         const asteroidRect = asteroid.getBoundingClientRect();
-        if (asteroidRect.bottom >= gameContainerRect.bottom) {
+        if (asteroidRect.top >= gameContainerRect.bottom) {
             clearInterval(setAsteroidMove);
             asteroid.remove();
             ++avoidedAsteroids;
             currentAvoidedAsteroids.innerHTML = `Avoided asteroids: ${avoidedAsteroids}`;
         }
-    }, 15);
+    }, 5);
 }
 
 function startRockets(event) {
@@ -121,13 +121,13 @@ function moveRocket(rockets) {
         fireRocket -= rocketSpeed;
         rockets.style.top = `${fireRocket}%`;
         const rocketRect = rockets.getBoundingClientRect();
-        if (rocketRect.top <= gameContainerRect.top) {
+        if (rocketRect.bottom <= gameContainerRect.top) {
             clearInterval(rocketMove);
             rockets.remove();
         } else {
             destroyAsteroid(rockets);
         }
-    }, 30);
+    }, 10);
 }
 
 function destroyAsteroid(rockets) {

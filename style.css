@@ -48,7 +48,7 @@ body {
     border-radius: 20px;
     justify-content: center;
     align-items: center;
-    overflow-y: hidden;
+    overflow: hidden;
 }
 
 .plane {
